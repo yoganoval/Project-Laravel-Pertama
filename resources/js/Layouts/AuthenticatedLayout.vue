@@ -9,48 +9,61 @@ const page = usePage()
 
 // sidebar toggle
 const open = ref(false)
+const collapsed = ref(false)
 
-// permissions (pakai Set biar cepat)
+// permissions
 const permissionSet = computed(() => new Set(page.props.auth.user?.permissions || []))
-
 const hasPermission = (perm) => permissionSet.value.has(perm)
 
-// active menu (lebih stabil)
+// active menu
 const isActive = (prefix) => route().current().startsWith(prefix)
+
+// 🌙 DARK MODE
+const toggleDark = () => {
+    if (localStorage.theme === 'dark') {
+        localStorage.theme = 'light'
+        document.documentElement.classList.remove('dark')
+    } else {
+        localStorage.theme = 'dark'
+        document.documentElement.classList.add('dark')
+    }
+}
 </script>
 
 <template>
-<div class="flex min-h-screen bg-gray-100">
+<div class="flex min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100">
 
     <!-- SIDEBAR -->
     <aside
         :class="[
-            'fixed z-20 inset-y-0 left-0 w-64 bg-gray-900 text-white transform transition-transform duration-300 ease-in-out',
+            'fixed z-20 inset-y-0 left-0 bg-white dark:bg-gray-900 text-gray-800 dark:text-white transform transition-all duration-300 ease-in-out',
             open ? 'translate-x-0' : '-translate-x-full',
-            'md:translate-x-0 md:static'
+            'md:translate-x-0 md:static',
+            collapsed ? 'w-20' : 'w-64'
         ]"
     >
         <!-- HEADER -->
-        <div class="flex items-center justify-center h-16 bg-gray-800 font-bold">
-            📚 Perpustakaan
+        <div class="flex items-center justify-center h-16 bg-gray-200 dark:bg-gray-800 font-bold">
+            <span v-if="!collapsed">📚 Perpustakaan</span>
+            <span v-else>📚</span>
         </div>
 
-        <nav class="mt-4 px-4 space-y-2">
+        <nav class="mt-4 px-2 space-y-2">
 
             <!-- DASHBOARD -->
             <Link
                 @click="open = false"
                 :href="route('dashboard')"
                 :class="[
-                    'block px-4 py-2 rounded',
-                    isActive('dashboard') ? 'bg-gray-700' : 'hover:bg-gray-700'
+                    'flex items-center px-4 py-2 rounded',
+                    isActive('dashboard') ? 'bg-gray-300 dark:bg-gray-700' : 'hover:bg-gray-200 dark:hover:bg-gray-700'
                 ]"
             >
-                🏠 Dashboard
+                🏠 <span v-if="!collapsed" class="ml-2">Dashboard</span>
             </Link>
 
             <!-- MASTER DATA -->
-            <div class="text-gray-400 text-xs uppercase px-4 mt-4">
+            <div v-if="!collapsed" class="text-gray-400 dark:text-gray-500 text-xs uppercase px-4 mt-4">
                 Master Data
             </div>
 
@@ -60,11 +73,11 @@ const isActive = (prefix) => route().current().startsWith(prefix)
                 @click="open = false"
                 :href="route('users.index')"
                 :class="[
-                    'block px-4 py-2 rounded',
-                    isActive('users') ? 'bg-gray-700' : 'hover:bg-gray-700'
+                    'flex items-center px-4 py-2 rounded',
+                    isActive('users') ? 'bg-gray-300 dark:bg-gray-700' : 'hover:bg-gray-200 dark:hover:bg-gray-700'
                 ]"
             >
-                👤 Users
+                👤 <span v-if="!collapsed" class="ml-2">Users</span>
             </Link>
 
             <!-- BOOKS -->
@@ -73,15 +86,15 @@ const isActive = (prefix) => route().current().startsWith(prefix)
                 @click="open = false"
                 :href="route('books.index')"
                 :class="[
-                    'block px-4 py-2 rounded',
-                    isActive('books') ? 'bg-gray-700' : 'hover:bg-gray-700'
+                    'flex items-center px-4 py-2 rounded',
+                    isActive('books') ? 'bg-gray-300 dark:bg-gray-700' : 'hover:bg-gray-200 dark:hover:bg-gray-700'
                 ]"
             >
-                📚 Data Buku
+                📚 <span v-if="!collapsed" class="ml-2">Data Buku</span>
             </Link>
 
             <!-- TRANSAKSI -->
-            <div class="text-gray-400 text-xs uppercase px-4 mt-4">
+            <div v-if="!collapsed" class="text-gray-400 dark:text-gray-500 text-xs uppercase px-4 mt-4">
                 Transaksi
             </div>
 
@@ -91,15 +104,15 @@ const isActive = (prefix) => route().current().startsWith(prefix)
                 @click="open = false"
                 :href="route('peminjaman.index')"
                 :class="[
-                    'block px-4 py-2 rounded',
-                    isActive('peminjaman') ? 'bg-gray-700' : 'hover:bg-gray-700'
+                    'flex items-center px-4 py-2 rounded',
+                    isActive('peminjaman') ? 'bg-gray-300 dark:bg-gray-700' : 'hover:bg-gray-200 dark:hover:bg-gray-700'
                 ]"
             >
-                📖 Data Peminjaman
+                📖 <span v-if="!collapsed" class="ml-2">Data Peminjaman</span>
             </Link>
 
             <!-- PENGATURAN -->
-            <div class="text-gray-400 text-xs uppercase px-4 mt-4">
+            <div v-if="!collapsed" class="text-gray-400 dark:text-gray-500 text-xs uppercase px-4 mt-4">
                 Pengaturan
             </div>
 
@@ -109,11 +122,11 @@ const isActive = (prefix) => route().current().startsWith(prefix)
                 @click="open = false"
                 :href="route('roles.index')"
                 :class="[
-                    'block px-4 py-2 rounded',
-                    isActive('roles') ? 'bg-gray-700' : 'hover:bg-gray-700'
+                    'flex items-center px-4 py-2 rounded',
+                    isActive('roles') ? 'bg-gray-300 dark:bg-gray-700' : 'hover:bg-gray-200 dark:hover:bg-gray-700'
                 ]"
             >
-                🔑 Role Permissions
+                🔑 <span v-if="!collapsed" class="ml-2">Role Permissions</span>
             </Link>
 
             <!-- PERMISSION -->
@@ -122,11 +135,11 @@ const isActive = (prefix) => route().current().startsWith(prefix)
                 @click="open = false"
                 :href="route('permissions.index')"
                 :class="[
-                    'block px-4 py-2 rounded',
-                    isActive('permissions') ? 'bg-gray-700' : 'hover:bg-gray-700'
+                    'flex items-center px-4 py-2 rounded',
+                    isActive('permissions') ? 'bg-gray-300 dark:bg-gray-700' : 'hover:bg-gray-200 dark:hover:bg-gray-700'
                 ]"
             >
-                ⚙️ Permissions
+                ⚙️ <span v-if="!collapsed" class="ml-2">Permissions</span>
             </Link>
 
         </nav>
@@ -136,23 +149,43 @@ const isActive = (prefix) => route().current().startsWith(prefix)
     <div class="flex-1 flex flex-col">
 
         <!-- NAVBAR -->
-        <nav class="border-b border-gray-100 bg-white">
-            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <nav class="border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+            <div class="w-full pl-2 pr-4 sm:pl-4 sm:pr-6 lg:pl-6 lg:pr-8">
                 <div class="flex h-16 justify-between">
 
                     <!-- LEFT -->
                     <div class="flex items-center">
-                        <button @click="open = !open" class="mr-4 md:hidden text-gray-600 text-xl">
+                        <!-- mobile -->
+                        <button 
+                            @click="open = !open" 
+                            class="mr-2 md:hidden text-gray-600 dark:text-gray-300 text-xl"
+                        >
                             ☰
+                        </button>
+
+                        <!-- collapse -->
+                        <button 
+                            @click="collapsed = !collapsed"
+                            class="mr-2 px-3 py-2 rounded bg-gray-200 dark:bg-gray-700 text-sm"
+                        >
+                            {{ collapsed ? '➡️' : '⬅️' }}
                         </button>
                     </div>
 
                     <!-- RIGHT -->
-                    <div class="hidden sm:flex sm:items-center">
+                    <div class="flex items-center">
+
+                        <!-- dark mode -->
+                        <button 
+                            @click="toggleDark"
+                            class="mr-4 px-3 py-2 rounded bg-gray-200 dark:bg-gray-700 text-sm"
+                        >
+                            🌙
+                        </button>
 
                         <Dropdown align="right" width="48">
                             <template #trigger>
-                                <button class="inline-flex items-center px-3 py-2 text-sm text-gray-500">
+                                <button class="inline-flex items-center px-3 py-2 text-sm text-gray-500 dark:text-gray-300">
                                     {{ $page.props.auth.user.name }}
                                 </button>
                             </template>

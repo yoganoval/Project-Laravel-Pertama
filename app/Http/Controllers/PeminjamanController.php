@@ -18,7 +18,7 @@ class PeminjamanController extends Controller
 public function index()
 {
     $today = Carbon::now();
-    $finePerDay = 1000;
+    $finePerDay = 3000;
 
     $data = Peminjaman::with(['user', 'book'])
         ->get()
@@ -34,11 +34,9 @@ public function index()
 
                 $item->is_terlambat = true;
 
-                $hariTelat = $jatuhTempo->diffInDays($today);
+                $hariTelat = $jatuhTempo->startOfDay()->diffInDays($today->startOfDay());
 
-                if ($hariTelat == 0) {
-                    $hariTelat = 1;
-                }
+                $hariTelat = max(1, $hariTelat);
 
                 // ⚠️ hanya untuk tampilan (tidak simpan ke DB)
                 $item->denda = $hariTelat * $finePerDay;
@@ -143,14 +141,17 @@ public function index()
 
         if ($today->gt($jatuhTempo)) {
 
-            $hariTelat = $jatuhTempo->diffInDays($today);
+        $hariTelat = $jatuhTempo->startOfDay()->diffInDays($today->startOfDay());
 
-            // 🔥 biar gak 0 walau beda jam
-            if ($hariTelat == 0) {
-                $hariTelat = 1;
+        $hariTelat = max(1, $hariTelat);
+
+            $denda = $hariTelat * 3000;
+
+            // 🔴 TAMBAHAN WAJIB (INI YANG KAMU CARI)
+            if ($peminjaman->status_denda !== 'lunas') {
+                return back()->with('error', 'Harap bayar denda terlebih dahulu!');
             }
 
-            $denda = $hariTelat * 1000;
             $isTerlambat = true;
         }
 
@@ -210,9 +211,22 @@ public function index()
     {
         $peminjaman = Peminjaman::findOrFail($id);
 
-        $peminjaman->update([
-            'status_denda' => 'lunas'
-        ]);
+        $today = now();
+        $jatuhTempo = Carbon::parse($peminjaman->jatuh_tempo);
+
+        if ($today->gt($jatuhTempo)) {
+
+            $hariTelat = $jatuhTempo->startOfDay()->diffInDays($today->startOfDay());
+
+            $hariTelat = max(1, $hariTelat);
+
+            $denda = $hariTelat * 3000;
+
+            $peminjaman->update([
+                'denda' => $denda,
+                'status_denda' => 'lunas'
+            ]);
+        }
 
         return back()->with('success', 'Denda berhasil dibayar');
     }

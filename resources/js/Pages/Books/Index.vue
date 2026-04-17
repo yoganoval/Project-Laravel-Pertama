@@ -104,7 +104,9 @@ const destroy = (id) => {
 
       <!-- HEADER -->
       <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold">📚 Data Buku</h1>
+        <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100">
+          📚 Data Buku
+        </h1>
 
         <button
           v-if="can('create books')"
@@ -122,14 +124,14 @@ const destroy = (id) => {
           @input="doSearch"
           type="text"
           placeholder="Cari buku..."
-          class="border rounded-lg px-4 py-2 w-64"
+          class="border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 rounded-lg px-4 py-2 w-64"
         />
       </div>
 
       <!-- TABLE -->
-      <div class="bg-white rounded-xl shadow border overflow-hidden">
-        <table class="w-full text-sm">
-          <thead class="bg-gray-100 text-gray-600">
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <table class="w-full text-sm text-gray-700 dark:text-gray-200">
+          <thead class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
             <tr>
               <th class="p-3 text-left">Judul</th>
               <th class="p-3 text-left">Penulis</th>
@@ -142,7 +144,7 @@ const destroy = (id) => {
             <tr
               v-for="book in books.data"
               :key="book.id"
-              class="border-t hover:bg-gray-50 transition"
+              class="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition"
             >
               <td class="p-3 font-medium">{{ book.judul }}</td>
               <td class="p-3">{{ book.penulis }}</td>
@@ -150,7 +152,9 @@ const destroy = (id) => {
               <td class="p-3 text-center">
                   <span
                       class="px-2 py-1 rounded text-xs"
-                      :class="book.stok > 0 ? 'bg-blue-100 text-blue-600' : 'bg-red-100 text-red-600'"
+                      :class="book.stok > 0 
+                        ? 'bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300' 
+                        : 'bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-300'"
                   >
                       {{ book.stok > 0 ? book.stok : 'Habis' }}
                   </span>
@@ -178,7 +182,7 @@ const destroy = (id) => {
                     v-if="can('create peminjaman')"
                     @click="pinjam(book.id)"
                     :disabled="book.stok <= 0"
-                    class="bg-blue-500 text-white px-2 py-1 rounded disabled:opacity-50"
+                    class="bg-green-600 text-white px-2 py-1 rounded disabled:opacity-50"
                 >
                     Pinjam
                 </button>
@@ -196,7 +200,7 @@ const destroy = (id) => {
           :key="link.label"
           :href="link.url || '#'"
           v-html="link.label"
-          class="px-3 py-1 border rounded text-sm"
+          class="px-3 py-1 border rounded text-sm border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200"
           :class="{
             'bg-blue-500 text-white': link.active,
             'text-gray-400': !link.url
@@ -209,20 +213,31 @@ const destroy = (id) => {
         v-if="showModal"
         class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center"
       >
-        <div class="bg-white rounded-xl shadow-xl w-full max-w-md p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-md p-6">
 
-          <h2 class="text-lg font-bold mb-4">
+          <h2 class="text-lg font-bold mb-4 text-gray-800 dark:text-gray-100">
             {{ isEdit ? 'Edit Buku' : 'Tambah Buku' }}
           </h2>
 
           <form @submit.prevent="submit" class="space-y-3">
 
-            <input v-model="form.judul" placeholder="Judul" class="border p-2 w-full rounded" />
-            <input v-model="form.penulis" placeholder="Penulis" class="border p-2 w-full rounded" />
-            <input v-model="form.penerbit" placeholder="Penerbit" class="border p-2 w-full rounded" />
-            <input v-model="form.tahun_terbit" type="number" placeholder="Tahun" class="border p-2 w-full rounded" />
-            <input v-model="form.isbn" placeholder="ISBN" class="border p-2 w-full rounded" />
-            <input v-model="form.stok" type="number" placeholder="Stok" class="border p-2 w-full rounded" />
+            <input v-model="form.judul" placeholder="Judul"
+              class="border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-700 text-gray-800 dark:text-white p-2 w-full rounded" />
+
+            <input v-model="form.penulis" placeholder="Penulis"
+              class="border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-700 text-gray-800 dark:text-white p-2 w-full rounded" />
+
+            <input v-model="form.penerbit" placeholder="Penerbit"
+              class="border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-700 text-gray-800 dark:text-white p-2 w-full rounded" />
+
+            <input v-model="form.tahun_terbit" type="number" placeholder="Tahun"
+              class="border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-700 text-gray-800 dark:text-white p-2 w-full rounded" />
+
+            <input v-model="form.isbn" placeholder="ISBN"
+              class="border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-700 text-gray-800 dark:text-white p-2 w-full rounded" />
+
+            <input v-model="form.stok" type="number" placeholder="Stok"
+              class="border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-700 text-gray-800 dark:text-white p-2 w-full rounded" />
 
             <div class="flex justify-end gap-2 mt-4">
               <button

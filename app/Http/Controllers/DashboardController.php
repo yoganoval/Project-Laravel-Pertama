@@ -18,7 +18,25 @@ class DashboardController extends Controller
             return Inertia::render('Admin/Dashboard', [
                 'totalUsers' => User::count(),
                 'totalBooks' => Book::count(),
-                'peminjaman' => Peminjaman::with(['user', 'book'])->latest()->take(5)->get()
+
+                // 🔥 tambahan
+                'totalPinjam' => Peminjaman::count(),
+                'totalDenda' => Peminjaman::sum('denda'),
+
+                'pinjamBulanIni' => Peminjaman::whereMonth('created_at', now()->month)->count(),
+
+                'chartPinjam' => collect(range(6, 0))->map(function ($i) {
+                    return [
+                        'tanggal' => now()->subDays($i)->format('d M'),
+                        'total' => Peminjaman::whereDate('created_at', now()->subDays($i))->count()
+                    ];
+                }),
+
+                // data terbaru
+                'peminjaman' => Peminjaman::with(['user', 'book'])
+                    ->latest()
+                    ->take(5)
+                    ->get()
             ]);
         }
 

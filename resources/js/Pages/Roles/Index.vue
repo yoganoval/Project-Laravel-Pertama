@@ -19,7 +19,9 @@ const deleteRole = (id) => {
 
         <!-- HEADER -->
         <div class="flex justify-between items-center mb-6">
-            <h1 class="text-2xl font-bold">Manajemen Role</h1>
+            <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100">
+                Manajemen Role
+            </h1>
 
             <a href="/roles/create"
                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow">
@@ -28,10 +30,10 @@ const deleteRole = (id) => {
         </div>
 
         <!-- TABLE -->
-        <div class="bg-white shadow rounded overflow-hidden">
-            <table class="w-full text-sm">
+        <div class="bg-white dark:bg-gray-800 shadow rounded border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <table class="w-full text-sm text-gray-700 dark:text-gray-200">
 
-                <thead class="bg-gray-100">
+                <thead class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
                     <tr>
                         <th class="p-3 text-left">No</th>
                         <th class="p-3 text-left">Role</th>
@@ -42,7 +44,7 @@ const deleteRole = (id) => {
 
                 <tbody>
                     <tr v-for="(role, index) in roles" :key="role.id"
-                        class="border-t hover:bg-gray-50">
+                        class="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition">
 
                         <td class="p-3">{{ index + 1 }}</td>
 
@@ -56,10 +58,10 @@ const deleteRole = (id) => {
                                       :key="p.id"
                                       class="text-xs px-2 py-1 rounded"
                                       :class="{
-                                          'bg-blue-100 text-blue-700': p.name.includes('view'),
-                                          'bg-green-100 text-green-700': p.name.includes('create'),
-                                          'bg-yellow-100 text-yellow-700': p.name.includes('edit'),
-                                          'bg-red-100 text-red-700': p.name.includes('delete'),
+                                          'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300': p.name.includes('view'),
+                                          'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300': p.name.includes('create'),
+                                          'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300': p.name.includes('edit'),
+                                          'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300': p.name.includes('delete'),
                                       }">
                                     {{ p.name }}
                                 </span>
@@ -68,19 +70,19 @@ const deleteRole = (id) => {
 
                         <td class="p-3 text-center space-x-2">
                             <a :href="`/roles/${role.id}/edit`"
-                               class="text-blue-600 hover:underline">
+                               class="text-blue-600 dark:text-blue-400 hover:underline">
                                 Edit
                             </a>
 
                             <button @click="deleteRole(role.id)"
-                                    class="text-red-600 hover:underline">
+                                    class="text-red-600 dark:text-red-400 hover:underline">
                                 Hapus
                             </button>
                         </td>
                     </tr>
 
                     <tr v-if="roles.length === 0">
-                        <td colspan="4" class="text-center p-4 text-gray-500">
+                        <td colspan="4" class="text-center p-4 text-gray-500 dark:text-gray-400">
                             Belum ada data role
                         </td>
                     </tr>

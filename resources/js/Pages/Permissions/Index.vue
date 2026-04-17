@@ -14,13 +14,13 @@ const deletePermission = (id) => {
     }
 }
 
-// 🔥 grouping permission
+// grouping
 const groupedPermissions = computed(() => {
     const groups = {}
 
     props.permissions.forEach(p => {
         const parts = p.name.split(' ')
-        const group = parts[1] || 'lainnya' // contoh: users, books
+        const group = parts[1] || 'lainnya'
 
         if (!groups[group]) {
             groups[group] = []
@@ -37,8 +37,11 @@ const groupedPermissions = computed(() => {
     <AuthenticatedLayout>
         <div class="p-6">
 
+            <!-- HEADER -->
             <div class="flex justify-between items-center mb-6">
-                <h1 class="text-2xl font-bold">⚙️ List Permission</h1>
+                <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100">
+                    ⚙️ List Permission
+                </h1>
 
                 <a 
                     href="/permissions/create" 
@@ -49,18 +52,22 @@ const groupedPermissions = computed(() => {
             </div>
 
             <!-- GROUP -->
-            <div v-for="(items, group) in groupedPermissions" :key="group" class="mb-6">
+            <div 
+                v-for="(items, group) in groupedPermissions" 
+                :key="group" 
+                class="mb-6"
+            >
 
                 <!-- HEADING -->
-                <h2 class="text-lg font-semibold mb-2 capitalize text-gray-700">
+                <h2 class="text-lg font-semibold mb-2 capitalize text-gray-700 dark:text-gray-300">
                     {{ group }}
                 </h2>
 
                 <!-- CARD -->
-                <div class="bg-white rounded-xl shadow border overflow-hidden">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-200 dark:border-gray-700 overflow-hidden">
 
-                    <table class="w-full text-sm">
-                        <thead class="bg-gray-100 text-gray-600">
+                    <table class="w-full text-sm text-gray-700 dark:text-gray-200">
+                        <thead class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
                             <tr>
                                 <th class="p-3 text-left">Permission</th>
                                 <th class="p-3 text-center w-32">Aksi</th>
@@ -71,7 +78,7 @@ const groupedPermissions = computed(() => {
                             <tr 
                                 v-for="p in items" 
                                 :key="p.id"
-                                class="border-t hover:bg-gray-50"
+                                class="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition"
                             >
                                 <td class="p-3">
                                     {{ p.name }}

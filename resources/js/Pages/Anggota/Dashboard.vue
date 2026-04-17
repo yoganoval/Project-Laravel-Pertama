@@ -20,84 +20,86 @@ const formatDate = (date) => {
 const isLate = (item) => {
     return item.status === 'dipinjam' && new Date() > new Date(item.jatuh_tempo)
 }
-
-
 </script>
 
 <template>
     <Head title="Dashboard Anggota" />
 
     <AuthenticatedLayout>
-
         <!-- HEADER -->
         <template #header>
-            <h2 class="text-xl font-semibold text-gray-800">
+            <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100">
                 Dashboard Anggota
             </h2>
         </template>
 
-        <div class="py-12">
+        <div class="py-12 bg-gray-100 dark:bg-gray-900 min-h-screen transition-colors duration-300">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
 
-                <!-- 👋 SAPA USER -->
-                <div class="mb-6 text-lg font-semibold">
-                    Halo {{ $page.props.auth.user.name }} 👋
+                <!-- SAPA USER -->
+                <div class="mb-6 bg-white dark:bg-gray-800 rounded-xl shadow p-6 transition-colors duration-300">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-white">
+                        Halo {{ $page.props.auth.user.name }} 👋
+                    </h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                        Selamat datang kembali di dashboard anggota
+                    </p>
                 </div>
 
-                <!-- CARD RINGKAS -->
+                <!-- CARD -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-
-                    <!-- TOTAL PINJAMAN -->
-                    <div class="bg-white p-6 rounded shadow">
-                        <h3 class="text-gray-500 text-sm">Sedang Dipinjam</h3>
-                        <p class="text-3xl font-bold text-blue-600">
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow transition-colors duration-300">
+                        <h3 class="text-sm text-gray-500 dark:text-gray-400">
+                            Sedang Dipinjam
+                        </h3>
+                        <p class="text-3xl font-bold text-blue-600 dark:text-blue-400 mt-2">
                             {{ peminjaman.length }}
                         </p>
                     </div>
-
                 </div>
 
                 <!-- LIST PEMINJAMAN -->
-                <div class="bg-white p-6 rounded shadow">
-
-                    <h3 class="text-lg font-semibold mb-4">
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow transition-colors duration-300">
+                    <h3 class="text-lg font-semibold mb-4 text-gray-800 dark:text-white">
                         📖 Buku yang Kamu Pinjam
                     </h3>
 
-                    <!-- JIKA KOSONG -->
-                    <div v-if="peminjaman.length === 0" class="text-gray-500">
+                    <!-- KOSONG -->
+                    <div
+                        v-if="peminjaman.length === 0"
+                        class="text-gray-500 dark:text-gray-400"
+                    >
                         Kamu belum meminjam buku
                     </div>
 
-                    <!-- JIKA ADA -->
-                    <div v-else class="space-y-3">
-
+                    <!-- ADA DATA -->
+                    <div v-else class="space-y-4">
                         <div
                             v-for="item in peminjaman"
                             :key="item.id"
-                            class="border p-4 rounded"
+                            class="border border-gray-200 dark:border-gray-700 rounded-xl p-4 bg-gray-50 dark:bg-gray-900 transition-colors duration-300"
                         >
                             <!-- JUDUL -->
-                            <div class="font-bold text-lg">
+                            <div class="font-bold text-lg text-gray-800 dark:text-white">
                                 {{ item.book?.judul }}
                             </div>
 
                             <!-- TANGGAL -->
-                            <div class="text-sm text-gray-600">
+                            <div class="mt-2 text-sm text-gray-600 dark:text-gray-400">
                                 📅 Pinjam: {{ formatDate(item.tanggal_pinjam) }}
                             </div>
 
-                            <div class="text-sm text-gray-600">
+                            <div class="text-sm text-gray-600 dark:text-gray-400">
                                 ⏳ Jatuh tempo: {{ formatDate(item.jatuh_tempo) }}
                             </div>
 
                             <!-- STATUS -->
-                            <div class="mt-2">
+                            <div class="mt-3">
                                 <span
-                                    class="px-2 py-1 rounded text-xs font-semibold"
+                                    class="px-3 py-1 rounded-full text-xs font-semibold"
                                     :class="{
-                                        'bg-red-100 text-red-600': item.status === 'dipinjam',
-                                        'bg-green-100 text-green-600': item.status === 'dikembalikan'
+                                        'bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-300': item.status === 'dipinjam',
+                                        'bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-300': item.status === 'dikembalikan'
                                     }"
                                 >
                                     {{ item.status }}
@@ -107,19 +109,14 @@ const isLate = (item) => {
                             <!-- TERLAMBAT -->
                             <div
                                 v-if="isLate(item)"
-                                class="text-red-600 text-sm mt-1"
+                                class="mt-3 text-sm font-medium text-red-600 dark:text-red-400"
                             >
                                 ⚠️ Kamu terlambat mengembalikan buku
                             </div>
-
                         </div>
-
                     </div>
-
                 </div>
-
             </div>
         </div>
-
     </AuthenticatedLayout>
 </template>

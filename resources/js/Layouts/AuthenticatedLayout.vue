@@ -5,6 +5,8 @@ import { usePage, Link } from '@inertiajs/vue3'
 import Dropdown from '@/Components/Dropdown.vue'
 import DropdownLink from '@/Components/DropdownLink.vue'
 
+const dropdownOpen = ref(false)
+
 const page = usePage()
 
 // sidebar toggle
@@ -166,7 +168,7 @@ const toggleDark = () => {
                         <!-- collapse -->
                         <button 
                             @click="collapsed = !collapsed"
-                            class="mr-2 px-3 py-2 rounded bg-gray-200 dark:bg-gray-700 text-sm"
+                            class="mr-2 px-3 py-2 rounded bg-gray-200 dark:bg-gray-700 text-sm text-gray-700 dark:text-gray-200"
                         >
                             {{ collapsed ? '➡️' : '⬅️' }}
                         </button>
@@ -178,26 +180,68 @@ const toggleDark = () => {
                         <!-- dark mode -->
                         <button 
                             @click="toggleDark"
-                            class="mr-4 px-3 py-2 rounded bg-gray-200 dark:bg-gray-700 text-sm"
+                            class="mr-4 px-3 py-2 rounded bg-gray-200 dark:bg-gray-700 text-sm text-gray-700 dark:text-gray-200"
                         >
                             🌙
                         </button>
 
                         <Dropdown align="right" width="48">
                             <template #trigger>
-                                <button class="inline-flex items-center px-3 py-2 text-sm text-gray-500 dark:text-gray-300">
-                                    {{ $page.props.auth.user.name }}
+                                <button
+                                    @click="dropdownOpen = !dropdownOpen"
+                                    class="inline-flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-600 dark:text-gray-300 transition"
+                                >
+                                    <img
+                                        v-if="$page.props.auth.user.photo"
+                                        :src="`/storage/${$page.props.auth.user.photo}`"
+                                        alt="Foto User"
+                                        class="w-8 h-8 rounded-full object-cover border border-gray-300 dark:border-gray-600"
+                                    >
+
+                                    <div
+                                        v-else
+                                        class="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center text-xs font-bold text-white"
+                                    >
+                                        {{ $page.props.auth.user.name.charAt(0).toUpperCase() }}
+                                    </div>
+
+                                    <span>{{ $page.props.auth.user.name }}</span>
+
+                                    <svg
+                                        class="w-4 h-4 transition-transform duration-200 text-gray-500 dark:text-gray-300"
+                                        :class="{ 'rotate-180': dropdownOpen }"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M19 9l-7 7-7-7"
+                                        />
+                                    </svg>
                                 </button>
                             </template>
 
                             <template #content>
-                                <DropdownLink :href="route('profile.edit')">
-                                    Profile
-                                </DropdownLink>
+                                <div class="min-w-[180px]">
+                                    <DropdownLink
+                                        :href="route('profile.edit')"
+                                        class="block bg-transparent dark:bg-slate-800 px-4 py-3 text-sm text-slate-200 hover:bg-slate-700 hover:text-white transition"
+                                    >
+                                        Profile
+                                    </DropdownLink>
 
-                                <DropdownLink :href="route('logout')" method="post" as="button">
-                                    Log Out
-                                </DropdownLink>
+                                    <DropdownLink
+                                        :href="route('logout')"
+                                        method="post"
+                                        as="button"
+                                        class="block w-full text-left bg-transparent dark:bg-slate-800 px-4 py-3 text-sm text-slate-200 hover:bg-slate-700 hover:text-white transition"
+                                    >
+                                        Log Out
+                                    </DropdownLink>
+                                </div>
                             </template>
                         </Dropdown>
 

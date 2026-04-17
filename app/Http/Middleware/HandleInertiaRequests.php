@@ -36,6 +36,8 @@ class HandleInertiaRequests extends Middleware
                             ->getAllPermissions()
                             ->pluck('name')
                             ->toArray(),
+
+                        'photo' => $request->user()->photo,
                     ]
                     : null,
             ],
